@@ -2,7 +2,7 @@ import throttle from 'lodash.throttle';
 const form = document.querySelector('.feedback-form');
 const input = document.querySelector('input');
 const text = document.querySelector('textarea');
-const LOCAL_KEY = 'feedback-form-state';
+const LOCALSTORAGE_KEY = 'feedback-form-state';
 const setStorageData = (key, value) => {
   try {
     const serializedState = JSON.stringify(value);
@@ -20,10 +20,10 @@ const getStorageData = key => {
   }
 };
 
-const info = {};
+const formInfo = {};
 form.addEventListener('input', throttle(onLocalStorageSet, 500));
 form.addEventListener('submit', onCleanLocalStorage);
-let storageData = getStorageData(LOCAL_KEY) || {};
+let storageData = getStorageData(LOCALSTORAGE_KEY) || {};
 
 if (storageData.imail || storageData.message) {
   input.value = storageData.imail || '';
@@ -31,15 +31,19 @@ if (storageData.imail || storageData.message) {
 }
 
 function onLocalStorageSet() {
-  info.imail = input.value;
-  info.message = text.value;
-  setStorageData(LOCAL_KEY, info);
+  formInfo.imail = input.value;
+  formInfo.message = text.value;
+  setStorageData(LOCALSTORAGE_KEY, formInfo);
 }
 
 function onCleanLocalStorage(evt) {
   evt.preventDefault();
-  console.log(storageData);
-  localStorage.clear();
-  input.value = '';
-  text.value = '';
+  if (input.value === '' || text.value === '') {
+    alert('Please fill out all the fields!');
+  } else {
+    console.log(formInfo);
+    localStorage.clear();
+    input.value = '';
+    text.value = '';
+  }
 }
