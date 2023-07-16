@@ -24,26 +24,30 @@ const formInfo = {};
 form.addEventListener('input', throttle(onLocalStorageSet, 500));
 form.addEventListener('submit', onCleanLocalStorage);
 let storageData = getStorageData(LOCALSTORAGE_KEY) || {};
+pageReload();
 
-if (storageData.imail || storageData.message) {
-  input.value = storageData.imail || '';
-  text.value = storageData.message || '';
+function pageReload() {
+  if (storageData.imail || storageData.message) {
+    input.value = storageData.email || '';
+    text.value = storageData.message || '';
+  }
 }
 
 function onLocalStorageSet() {
-  formInfo.imail = input.value;
+  formInfo.email = input.value;
   formInfo.message = text.value;
   setStorageData(LOCALSTORAGE_KEY, formInfo);
 }
 
 function onCleanLocalStorage(evt) {
   evt.preventDefault();
-  if (input.value === '' || text.value === '') {
+  const email = input.value;
+  const message = text.value;
+  console.log({ email, message });
+  if (email === '' || message === '') {
     alert('Please fill out all the fields!');
   } else {
-    console.log(formInfo);
-    localStorage.clear();
-    input.value = '';
-    text.value = '';
+    localStorage.removeItem(LOCALSTORAGE_KEY);
+    form.reset();
   }
 }

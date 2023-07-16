@@ -25,17 +25,4 @@ player.on(
 const savedCurrentTime = localStorage.getItem('videoplayer-current-time');
 const parsedCurrentTime = JSON.parse(savedCurrentTime);
 
-player
-  .setCurrentTime(parsedCurrentTime)
-  .then(function () {})
-  .catch(function (error) {
-    switch (error.name) {
-      case 'RangeError':
-        alert('the time was less than 0 or greater than the video’s duration');
-        break;
-
-      default:
-        alert('some other error occurred');
-        break;
-    }
-  });
+player.setCurrentTime(parsedCurrentTime || 0).then(function () {});
